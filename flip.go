@@ -19,7 +19,7 @@ func (f *FlipX) SubImage(r image.Rectangle) image.Image {
 	r.Min.X = b.Max.X + b.Min.X - r.Min.X
 	r.Max.X = b.Max.X + b.Min.X - r.Max.X
 	return &FlipX{
-		Image: SubImage(r.Image, r.Canon()),
+		Image: SubImage(f.Image, r.Canon()),
 	}
 }
 
@@ -37,6 +37,6 @@ func (f *FlipY) SubImage(r image.Rectangle) image.Image {
 	r.Min.Y = b.Max.Y + b.Min.Y - r.Min.Y
 	r.Max.Y = b.Max.Y + b.Min.Y - r.Max.Y
 	return &FlipY{
-		Image: SubImage(r.Image, r.Canon()),
+		Image: SubImage(f.Image, r.Canon()),
 	}
 }
