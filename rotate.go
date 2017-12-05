@@ -18,8 +18,8 @@ func (s Rotate180) SubImage(r image.Rectangle) image.Image {
 	b := s.Bounds()
 	return SubImage(s.Image, image.Rect(
 		b.Max.X+b.Min.X-r.Min.X,
-		b.Max.X+b.Min.X-r.Max.X,
 		b.Max.Y+b.Min.Y-r.Min.Y,
+		b.Max.X+b.Min.X-r.Max.X,
 		b.Max.Y+b.Min.Y-r.Max.Y,
 	))
 }
