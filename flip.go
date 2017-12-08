@@ -11,7 +11,7 @@ type FlipX struct {
 
 func (f *FlipX) At(x, y int) color.Color {
 	b := f.Bounds()
-	return f.Image.At(b.Max.X+b.Min.X-x, y)
+	return f.Image.At(b.Max.X+b.Min.X-x-1, y)
 }
 
 func (f *FlipX) SubImage(r image.Rectangle) image.Image {
@@ -29,7 +29,7 @@ type FlipY struct {
 
 func (f *FlipY) At(x, y int) color.Color {
 	b := f.Bounds()
-	return f.Image.At(x, b.Max.Y+b.Min.Y-y)
+	return f.Image.At(x, b.Max.Y+b.Min.Y-y-1)
 }
 
 func (f *FlipY) SubImage(r image.Rectangle) image.Image {
