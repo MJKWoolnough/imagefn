@@ -67,3 +67,30 @@ func TestFlipX(t *testing.T) {
 		}
 	}
 }
+
+func TestFlipY(t *testing.T) {
+	for n, test := range []struct {
+		In, Out image.Image
+	}{
+		{
+			newGray(1, 1, 1),
+			newGray(1, 1, 1),
+		},
+		{
+			newGray(2, 1, 0, 1),
+			newGray(2, 1, 0, 1),
+		},
+		{
+			newGray(1, 2, 0, 1),
+			newGray(1, 2, 1, 0),
+		},
+		{
+			newGray(3, 3, 0, 1, 2, 3, 4, 5, 6, 7, 8),
+			newGray(3, 3, 6, 7, 8, 3, 4, 5, 0, 1, 2),
+		},
+	} {
+		if !testImage(&FlipY{test.In}, test.Out) {
+			t.Errorf("test %d: images do not match", n+1)
+		}
+	}
+}
