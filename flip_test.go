@@ -42,55 +42,73 @@ Loop:
 }
 
 func TestFlipX(t *testing.T) {
-	for n, test := range []struct {
-		In, Out image.Image
+	for n, test := range [...]struct {
+		In, Out  *image.Gray
+		SubImage image.Rectangle
 	}{
 		{
 			newGray(1, 1, 1),
 			newGray(1, 1, 1),
+			image.Rect(0, 0, 1, 1),
 		},
 		{
 			newGray(1, 2, 0, 1),
 			newGray(1, 2, 0, 1),
+			image.Rect(0, 1, 1, 2),
 		},
 		{
 			newGray(2, 1, 0, 1),
 			newGray(2, 1, 1, 0),
+			image.Rect(0, 0, 1, 1),
 		},
 		{
 			newGray(3, 3, 0, 1, 2, 3, 4, 5, 6, 7, 8),
 			newGray(3, 3, 2, 1, 0, 5, 4, 3, 8, 7, 6),
+			image.Rect(1, 1, 3, 3),
 		},
 	} {
-		if !testImage(&FlipX{test.In}, test.Out) {
+		fx := FlipX{test.In}
+		if !testImage(&fx, test.Out) {
 			t.Errorf("test %d: images do not match", n+1)
+		}
+		if !testImage(fx.SubImage(test.SubImage), test.Out.SubImage(test.SubImage)) {
+			t.Errorf("test %d: subimages do not match", n+1)
 		}
 	}
 }
 
 func TestFlipY(t *testing.T) {
 	for n, test := range []struct {
-		In, Out image.Image
+		In, Out  *image.Gray
+		SubImage image.Rectangle
 	}{
 		{
 			newGray(1, 1, 1),
 			newGray(1, 1, 1),
+			image.Rect(0, 0, 1, 1),
 		},
 		{
 			newGray(2, 1, 0, 1),
 			newGray(2, 1, 0, 1),
+			image.Rect(0, 1, 2, 1),
 		},
 		{
 			newGray(1, 2, 0, 1),
 			newGray(1, 2, 1, 0),
+			image.Rect(0, 0, 1, 1),
 		},
 		{
 			newGray(3, 3, 0, 1, 2, 3, 4, 5, 6, 7, 8),
 			newGray(3, 3, 6, 7, 8, 3, 4, 5, 0, 1, 2),
+			image.Rect(1, 1, 3, 3),
 		},
 	} {
-		if !testImage(&FlipY{test.In}, test.Out) {
+		fy := FlipY{test.In}
+		if !testImage(&fy, test.Out) {
 			t.Errorf("test %d: images do not match", n+1)
+		}
+		if !testImage(fy.SubImage(test.SubImage), test.Out.SubImage(test.SubImage)) {
+			t.Errorf("test %d: subimages do not match", n+1)
 		}
 	}
 }
