@@ -5,6 +5,10 @@ import (
 	"image/color"
 )
 
+type setter interface {
+	Set(int, int, color.Color)
+}
+
 type subimage interface {
 	SubImage(image.Rectangle) image.Image
 }
@@ -12,6 +16,15 @@ type subimage interface {
 func SubImage(i image.Image, r image.Rectangle) image.Image {
 	if si, ok := i.(subimage); ok {
 		return si.SubImage(r)
+	}
+	if s, ok := i.(setter); ok {
+		return &windowSet{
+			window: window{
+				Image:     i,
+				Rectangle: r,
+			},
+			setter: s,
+		}
 	}
 	return &window{
 		Image:     i,
@@ -41,4 +54,16 @@ func (w *window) SubImage(r image.Rectangle) image.Image {
 		Image:     w.Image,
 		Rectangle: r,
 	}
+}
+
+type windowSet struct {
+	window
+	setter
+}
+
+func (w *windowSet) Set(x, y int, c color.Color) {
+	if !image.Pt(x, y).In(w.Rectangle) {
+		return
+	}
+	w.setter.Set(x, y, c)
 }
