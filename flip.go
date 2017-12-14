@@ -5,38 +5,80 @@ import (
 	"image/color"
 )
 
-type FlipX struct {
+type flipX struct {
 	image.Image
+	dx int
 }
 
-func (f *FlipX) At(x, y int) color.Color {
-	b := f.Bounds()
-	return f.Image.At(b.Max.X+b.Min.X-x-1, y)
+type flipXSet struct {
+	flipX
+	setter
 }
 
-func (f *FlipX) SubImage(r image.Rectangle) image.Image {
-	b := f.Bounds()
-	r.Min.X = b.Max.X + b.Min.X - r.Min.X
-	r.Max.X = b.Max.X + b.Min.X - r.Max.X
-	return &FlipX{
-		Image: SubImage(f.Image, r.Canon()),
+func FlipX(i image.Image) image.Image {
+	b := i.Bounds()
+	f := flipX{
+		Image: i,
+		dx:    b.Max.X + b.Min.X,
 	}
+	if s, ok := i.(setter); ok {
+		return &flipXSet{
+			flipX:  f,
+			setter: s,
+		}
+	}
+	return &f
 }
 
-type FlipY struct {
+func (f *flipX) At(x, y int) color.Color {
+	return f.Image.At(f.dx-x-1, y)
+}
+
+func (f *flipX) SubImage(r image.Rectangle) image.Image {
+	r.Min.X = f.dx - r.Min.X
+	r.Max.X = f.dx - r.Max.X
+	return FlipX(SubImage(f.Image, r.Canon()))
+}
+
+func (f *flipXSet) Set(x, y int, c color.Color) {
+	f.setter.Set(f.dx-x-1, y, c)
+}
+
+type flipY struct {
 	image.Image
+	dy int
 }
 
-func (f *FlipY) At(x, y int) color.Color {
-	b := f.Bounds()
-	return f.Image.At(x, b.Max.Y+b.Min.Y-y-1)
+type flipYSet struct {
+	flipY
+	setter
 }
 
-func (f *FlipY) SubImage(r image.Rectangle) image.Image {
-	b := f.Bounds()
-	r.Min.Y = b.Max.Y + b.Min.Y - r.Min.Y
-	r.Max.Y = b.Max.Y + b.Min.Y - r.Max.Y
-	return &FlipY{
-		Image: SubImage(f.Image, r.Canon()),
+func FlipY(i image.Image) image.Image {
+	b := i.Bounds()
+	f := flipY{
+		Image: i,
+		dy:    b.Max.Y + b.Min.Y,
 	}
+	if s, ok := i.(setter); ok {
+		return &flipYSet{
+			flipY:  f,
+			setter: s,
+		}
+	}
+	return &f
+}
+
+func (f *flipY) At(x, y int) color.Color {
+	return f.Image.At(x, f.dy-y-1)
+}
+
+func (f *flipY) SubImage(r image.Rectangle) image.Image {
+	r.Min.Y = f.dy - r.Min.Y
+	r.Max.Y = f.dy - r.Max.Y
+	return FlipY(SubImage(f.Image, r.Canon()))
+}
+
+func (f *flipYSet) Set(x, y int, c color.Color) {
+	f.setter.Set(x, f.dy-y-1, c)
 }

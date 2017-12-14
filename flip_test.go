@@ -67,11 +67,11 @@ func TestFlipX(t *testing.T) {
 			image.Rect(1, 1, 3, 3),
 		},
 	} {
-		fx := FlipX{test.In}
-		if !testImage(&fx, test.Out) {
+		fx := FlipX(test.In)
+		if !testImage(fx, test.Out) {
 			t.Errorf("test %d: images do not match", n+1)
 		}
-		if !testImage(fx.SubImage(test.SubImage), test.Out.SubImage(test.SubImage)) {
+		if !testImage(SubImage(fx, test.SubImage), test.Out.SubImage(test.SubImage)) {
 			t.Errorf("test %d: subimages do not match", n+1)
 		}
 	}
@@ -103,11 +103,11 @@ func TestFlipY(t *testing.T) {
 			image.Rect(1, 1, 3, 3),
 		},
 	} {
-		fy := FlipY{test.In}
-		if !testImage(&fy, test.Out) {
+		fy := FlipY(test.In)
+		if !testImage(fy, test.Out) {
 			t.Errorf("test %d: images do not match", n+1)
 		}
-		if !testImage(fy.SubImage(test.SubImage), test.Out.SubImage(test.SubImage)) {
+		if !testImage(SubImage(fy, test.SubImage), test.Out.SubImage(test.SubImage)) {
 			t.Errorf("test %d: subimages do not match", n+1)
 		}
 	}
