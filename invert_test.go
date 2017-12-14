@@ -14,7 +14,7 @@ func TestInvert(t *testing.T) {
 			newGray(3, 3, 255, 254, 253, 252, 251, 250, 249, 248, 247),
 		},
 	} {
-		if !testImage(&Invert{test.In}, test.Out) {
+		if !testImage(Invert(test.In), test.Out) {
 			t.Errorf("test %d: images do not match", n+1)
 		}
 	}
