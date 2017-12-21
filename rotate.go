@@ -5,21 +5,45 @@ import (
 	"image/color"
 )
 
-type Rotate180 struct {
+type rotate180 struct {
 	image.Image
+	dx, dy int
 }
 
-func (r Rotate180) At(x, y int) color.Color {
-	b := r.Image.Bounds()
-	return r.Image.At(b.Max.X+b.Min.X-x, b.Max.Y+b.Min.Y-y)
+type rotate180Set struct {
+	rotate180
+	setter
 }
 
-func (s Rotate180) SubImage(r image.Rectangle) image.Image {
-	b := s.Bounds()
+func Rotate180(i image.Image) image.Image {
+	b := i.Bounds()
+	r := rotate180{
+		Image: i,
+		dx:    b.Max.X + b.Min.X,
+		dy:    b.Max.Y + b.Min.Y,
+	}
+	if s, ok := i.(setter); ok {
+		return &rotate180Set{
+			rotate180: r,
+			setter:    s,
+		}
+	}
+	return &r
+}
+
+func (r rotate180) At(x, y int) color.Color {
+	return r.Image.At(r.dx-x, r.dy-y)
+}
+
+func (s rotate180) SubImage(r image.Rectangle) image.Image {
 	return SubImage(s.Image, image.Rect(
-		b.Max.X+b.Min.X-r.Min.X,
-		b.Max.Y+b.Min.Y-r.Min.Y,
-		b.Max.X+b.Min.X-r.Max.X,
-		b.Max.Y+b.Min.Y-r.Max.Y,
+		s.dx-r.Min.X,
+		s.dy-r.Min.Y,
+		s.dx-r.Max.X,
+		s.dy-r.Max.Y,
 	))
+}
+
+func (r rotate180Set) Set(x, y int, c color.Color) {
+	r.setter.Set(r.dx-x, r.dy-y, c)
 }
