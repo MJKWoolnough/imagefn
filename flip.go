@@ -16,6 +16,20 @@ type flipXSet struct {
 }
 
 func FlipX(i image.Image) image.Image {
+	switch i := i.(type) {
+	case *flipX:
+		return i.Image
+	case *flipXSet:
+		return i.Image
+	case *flipY:
+		return Rotate180(i.Image)
+	case *flipYSet:
+		return Rotate180(i.Image)
+	case *rotate180:
+		return FlipY(i.Image)
+	case *rotate180Set:
+		return FlipY(i.Image)
+	}
 	b := i.Bounds()
 	f := flipX{
 		Image: i,
@@ -55,6 +69,20 @@ type flipYSet struct {
 }
 
 func FlipY(i image.Image) image.Image {
+	switch i := i.(type) {
+	case *flipX:
+		return Rotate180(i.Image)
+	case *flipXSet:
+		return Rotate180(i.Image)
+	case *flipY:
+		return i.Image
+	case *flipYSet:
+		return i.Image
+	case *rotate180:
+		return FlipX(i.Image)
+	case *rotate180Set:
+		return FlipX(i.Image)
+	}
 	b := i.Bounds()
 	f := flipY{
 		Image: i,

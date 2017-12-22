@@ -16,6 +16,20 @@ type rotate180Set struct {
 }
 
 func Rotate180(i image.Image) image.Image {
+	switch i := i.(type) {
+	case *flipX:
+		return FlipY(i.Image)
+	case *flipXSet:
+		return FlipY(i.Image)
+	case *flipY:
+		return FlipX(i.Image)
+	case *flipYSet:
+		return FlipX(i.Image)
+	case *rotate180:
+		return i.Image
+	case *rotate180Set:
+		return i.Image
+	}
 	b := i.Bounds()
 	r := rotate180{
 		Image: i,
