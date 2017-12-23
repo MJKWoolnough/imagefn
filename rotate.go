@@ -5,6 +5,51 @@ import (
 	"image/color"
 )
 
+type rotate90 struct {
+	image.Image
+	dx, ay int
+}
+
+type rotate90Set struct {
+	rotate90
+	setter
+}
+
+func Rotate90(i image.Image) image.Image {
+	b := i.Bounds()
+	r := rotate90{
+		Image: i,
+		dx:    d.Min.X - d.Min.Y, // y = mx - my + x
+		ay:    b.Max.X - d.Min.X, // x = Mx - mx - y
+	}
+	if s, ok := i.(setter); ok {
+		return &rotate90Set{
+			rotate90: r,
+			setter:   s,
+		}
+	}
+	return &r
+}
+
+func (r rotate90) At(x, y int) color.Color {
+	return r.Image.At(r.ay-y, r.dx+x)
+}
+
+func (r rotate90) Bounds() image.Rectangle {
+	b := r.Image.Bounds()
+	b.Min.X, b.Min.Y = b.Min.Y, b.Min.X
+	b.Max.X, b.Max.Y = b.Max.Y, b.Max.X
+	return b
+}
+
+func (s rotate90) SubImage(r image.Rectangle) image.Image {
+	return s.Image
+}
+
+func (r rotate90Set) Set(x, y int, c color.Color) {
+	r.setter.Set(r.ay-y, r.dx+x, c)
+}
+
 type rotate180 struct {
 	image.Image
 	dx, dy int
