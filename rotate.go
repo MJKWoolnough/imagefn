@@ -7,7 +7,7 @@ import (
 
 type rotate90 struct {
 	image.Image
-	dx, ay int
+	ax, dy int
 }
 
 type rotate90Set struct {
@@ -19,8 +19,8 @@ func Rotate90(i image.Image) image.Image {
 	b := i.Bounds()
 	r := rotate90{
 		Image: i,
-		dx:    d.Min.X - d.Min.Y, // y = mx - my + x
-		ay:    b.Max.X - d.Min.X, // x = Mx - mx - y
+		ax:    b.Max.Y - b.Min.X, // x = My - mx - x
+		dy:    b.Min.X - b.Min.Y, // y = mx - my + y
 	}
 	if s, ok := i.(setter); ok {
 		return &rotate90Set{
@@ -32,7 +32,7 @@ func Rotate90(i image.Image) image.Image {
 }
 
 func (r rotate90) At(x, y int) color.Color {
-	return r.Image.At(r.ay-y, r.dx+x)
+	return r.Image.At(r.dy+y, r.ax-x-1)
 }
 
 func (r rotate90) Bounds() image.Rectangle {
@@ -47,7 +47,7 @@ func (s rotate90) SubImage(r image.Rectangle) image.Image {
 }
 
 func (r rotate90Set) Set(x, y int, c color.Color) {
-	r.setter.Set(r.ay-y, r.dx+x, c)
+	r.setter.Set(r.dy+y, r.ax-x-1, c)
 }
 
 type rotate180 struct {
@@ -91,7 +91,7 @@ func Rotate180(i image.Image) image.Image {
 }
 
 func (r rotate180) At(x, y int) color.Color {
-	return r.Image.At(r.dx-x, r.dy-y)
+	return r.Image.At(r.dx-x-1, r.dy-y-1)
 }
 
 func (s rotate180) SubImage(r image.Rectangle) image.Image {
@@ -104,5 +104,50 @@ func (s rotate180) SubImage(r image.Rectangle) image.Image {
 }
 
 func (r rotate180Set) Set(x, y int, c color.Color) {
-	r.setter.Set(r.dx-x, r.dy-y, c)
+	r.setter.Set(r.dx-x-1, r.dy-y-1, c)
+}
+
+type rotate270 struct {
+	image.Image
+	dx, ay int
+}
+
+type rotate270Set struct {
+	rotate270
+	setter
+}
+
+func Rotate270(i image.Image) image.Image {
+	b := i.Bounds()
+	r := rotate270{
+		Image: i,
+		dx:    b.Min.X - b.Min.Y, // y = mx - my + x
+		ay:    b.Max.X - b.Min.X, // x = Mx - mx - y
+	}
+	if s, ok := i.(setter); ok {
+		return &rotate270Set{
+			rotate270: r,
+			setter:    s,
+		}
+	}
+	return &r
+}
+
+func (r rotate270) At(x, y int) color.Color {
+	return r.Image.At(r.ay-y-1, r.dx+x)
+}
+
+func (r rotate270) Bounds() image.Rectangle {
+	b := r.Image.Bounds()
+	b.Min.X, b.Min.Y = b.Min.Y, b.Min.X
+	b.Max.X, b.Max.Y = b.Max.Y, b.Max.X
+	return b
+}
+
+func (s rotate270) SubImage(r image.Rectangle) image.Image {
+	return s.Image
+}
+
+func (r rotate270Set) Set(x, y int, c color.Color) {
+	r.setter.Set(r.ay-y-1, r.dx+x, c)
 }
