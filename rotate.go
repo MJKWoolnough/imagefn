@@ -16,6 +16,20 @@ type rotate90Set struct {
 }
 
 func Rotate90(i image.Image) image.Image {
+	switch i := i.(type) {
+	case *rotate90:
+		return Rotate180(i.Image)
+	case *rotate90Set:
+		return Rotate180(i.Image)
+	case *rotate180:
+		return Rotate270(i.Image)
+	case *rotate180Set:
+		return Rotate270(i.Image)
+	case *rotate270:
+		return i.Image
+	case *rotate270Set:
+		return i.Image
+	}
 	b := i.Bounds()
 	r := rotate90{
 		Image: i,
@@ -70,10 +84,18 @@ func Rotate180(i image.Image) image.Image {
 		return FlipX(i.Image)
 	case *flipYSet:
 		return FlipX(i.Image)
+	case *rotate90:
+		return Rotate270(i.Image)
+	case *rotate90Set:
+		return Rotate270(i.Image)
 	case *rotate180:
 		return i.Image
 	case *rotate180Set:
 		return i.Image
+	case *rotate90:
+		return Rotate90(i.Image)
+	case *rotate90Set:
+		return Rotate90(i.Image)
 	}
 	b := i.Bounds()
 	r := rotate180{
@@ -118,6 +140,20 @@ type rotate270Set struct {
 }
 
 func Rotate270(i image.Image) image.Image {
+	switch i := i.(type) {
+	case *rotate90:
+		return i.Image
+	case *rotate90Set:
+		return i.Image
+	case *rotate180:
+		return Rotate90(i.Image)
+	case *rotate180Set:
+		return Rotate90(i.Image)
+	case *rotate270:
+		return Rotate180(i.Image)
+	case *rotate270Set:
+		return Rotate180(i.Image)
+	}
 	b := i.Bounds()
 	r := rotate270{
 		Image: i,
