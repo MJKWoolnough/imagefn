@@ -92,10 +92,6 @@ func Rotate180(i image.Image) image.Image {
 		return i.Image
 	case *rotate180Set:
 		return i.Image
-	case *rotate90:
-		return Rotate90(i.Image)
-	case *rotate90Set:
-		return Rotate90(i.Image)
 	}
 	b := i.Bounds()
 	r := rotate180{
