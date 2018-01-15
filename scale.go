@@ -12,6 +12,8 @@ type scale struct {
 
 func Scale(i image.Image, xScale, yScale float64) image.Image {
 	switch im := i.(type) {
+	case *empty:
+		return i
 	case *scale:
 		xScale *= im.ScaleX
 		yScale *= im.ScaleY
@@ -30,10 +32,7 @@ func Scale(i image.Image, xScale, yScale float64) image.Image {
 		yScale = -yScale
 	}
 	if xScale == 0 || yScale == 0 {
-		return empty{
-			Model: i.ColorModel(),
-			Min:   i.Bounds().Min,
-		}
+		return newEmpty(i)
 	}
 	if xScale == 1 && yScale == 1 {
 		return i

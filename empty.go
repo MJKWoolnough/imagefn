@@ -3,11 +3,25 @@ package imagefn
 import (
 	"image"
 	"image/color"
+	"image/draw"
 )
 
 type empty struct {
 	color.Model
 	Min image.Point
+}
+
+func newEmpty(i image.Image) image.Image {
+	e := empty{
+		Model: i.ColorModel(),
+		Min:   i.Bounds().Min,
+	}
+	if _, ok := i.(draw.Image); ok {
+		return &emptySet{
+			empty: e,
+		}
+	}
+	return &e
 }
 
 func (e empty) ColorModel() color.Model {
@@ -22,4 +36,8 @@ func (e empty) At(x, y int) color.Color {
 	return e.Model.Convert(color.Alpha{})
 }
 
-func (empty) Set(_, _ int, _ color.Color) {}
+type emptySet struct {
+	empty
+}
+
+func (emptySet) Set(_, _ int, _ color.Color) {}
