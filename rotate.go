@@ -17,6 +17,8 @@ type rotate90Set struct {
 
 func Rotate90(i image.Image) image.Image {
 	switch i := i.(type) {
+	case *empty:
+		return i
 	case *rotate90:
 		return Rotate180(i.Image)
 	case *rotate90Set:
@@ -76,6 +78,8 @@ type rotate180Set struct {
 
 func Rotate180(i image.Image) image.Image {
 	switch i := i.(type) {
+	case *empty:
+		return i
 	case *flipX:
 		return FlipY(i.Image)
 	case *flipXSet:
@@ -137,6 +141,8 @@ type rotate270Set struct {
 
 func Rotate270(i image.Image) image.Image {
 	switch i := i.(type) {
+	case *empty:
+		return i
 	case *rotate90:
 		return i.Image
 	case *rotate90Set:
