@@ -3,7 +3,6 @@ package imagefn
 import (
 	"image"
 	"image/color"
-	"image/draw"
 )
 
 type empty struct {
@@ -16,7 +15,7 @@ func newEmpty(i image.Image) image.Image {
 		Model: i.ColorModel(),
 		Min:   i.Bounds().Min,
 	}
-	if _, ok := i.(draw.Image); ok {
+	if _, ok := i.(setter); ok {
 		return &emptySet{
 			empty: e,
 		}
