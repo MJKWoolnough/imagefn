@@ -66,3 +66,25 @@ func (s *scale) At(x, y int) color.Color {
 		b.Min.Y+int(float64(y-b.Min.Y)/s.ScaleY),
 	)
 }
+
+type smoothScale struct {
+	scale
+}
+
+func SmoothScale(i image.Image, xScale, yScale float64) image.Image {
+	switch s := Scale(i, xScale, yScale).(type) {
+	case *scale:
+		return smoothScale{s}
+	default:
+		return s
+	}
+}
+
+func SmoothScaleDimensions(i image.Image, x, y int) image.Image {
+	b := i.Bounds()
+	return SmoothScale(i, float64(x)/float64(b.Dx()), float64(y)/float64(b.Dy()))
+}
+
+func (s *smoothScale) At(x, y int) color.Color {
+	return nil
+}
