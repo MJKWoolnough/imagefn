@@ -67,22 +67,26 @@ func (s *scale) At(x, y int) color.Color {
 	)
 }
 
-type smoothScale struct {
-	scale
+type Scaler interface {
 }
 
-func SmoothScale(i image.Image, xScale, yScale float64) image.Image {
+type smoothScale struct {
+	scale
+	scaler Scaler
+}
+
+func SmoothScale(i image.Image, xScale, yScale float64, scale Scale) image.Image {
 	switch s := Scale(i, xScale, yScale).(type) {
 	case *scale:
-		return smoothScale{s}
+		return smoothScale{s, scaler}
 	default:
 		return s
 	}
 }
 
-func SmoothScaleDimensions(i image.Image, x, y int) image.Image {
+func SmoothScaleDimensions(i image.Image, x, y int, scaler Scaler) image.Image {
 	b := i.Bounds()
-	return SmoothScale(i, float64(x)/float64(b.Dx()), float64(y)/float64(b.Dy()))
+	return SmoothScale(i, float64(x)/float64(b.Dx()), float64(y)/float64(b.Dy()), scaler)
 }
 
 func (s *smoothScale) At(x, y int) color.Color {
