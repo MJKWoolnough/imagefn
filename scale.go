@@ -68,6 +68,7 @@ func (s *scale) At(x, y int) color.Color {
 }
 
 type Scaler interface {
+	At(image.Image, int, int) color.Color
 }
 
 type smoothScale struct {
@@ -90,5 +91,5 @@ func SmoothScaleDimensions(i image.Image, x, y int, scaler Scaler) image.Image {
 }
 
 func (s *smoothScale) At(x, y int) color.Color {
-	return nil
+	return s.ColorModel().Convert(s.scaler.At(s.Image, x, y))
 }
