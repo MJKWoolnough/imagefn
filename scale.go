@@ -76,10 +76,10 @@ type smoothScale struct {
 	scaler Scaler
 }
 
-func SmoothScale(i image.Image, xScale, yScale float64, scale Scale) image.Image {
+func SmoothScale(i image.Image, xScale, yScale float64, scaler Scaler) image.Image {
 	switch s := Scale(i, xScale, yScale).(type) {
 	case *scale:
-		return smoothScale{s, scaler}
+		return &smoothScale{*s, scaler}
 	default:
 		return s
 	}
