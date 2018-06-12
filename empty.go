@@ -1,4 +1,4 @@
-package imagefn
+package imagefn // import "vimagination.zapto.org/imagefn"
 
 import (
 	"image"
