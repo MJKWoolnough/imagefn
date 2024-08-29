@@ -15,6 +15,7 @@ func newEmpty(i image.Image) image.Image {
 		Model: i.ColorModel(),
 		Min:   i.Bounds().Min,
 	}
+
 	if _, ok := i.(setter); ok {
 		return &emptySet{
 			empty: e,

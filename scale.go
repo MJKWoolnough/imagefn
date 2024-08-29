@@ -19,6 +19,7 @@ func Scale(i image.Image, xScale, yScale float64) image.Image {
 		yScale *= im.ScaleY
 		i = im.Image
 	}
+
 	if xScale < 0 {
 		if yScale < 0 {
 			i = FlipX(i)
@@ -31,12 +32,15 @@ func Scale(i image.Image, xScale, yScale float64) image.Image {
 		i = FlipY(i)
 		yScale = -yScale
 	}
+
 	if xScale == 0 || yScale == 0 {
 		return newEmpty(i)
 	}
+
 	if xScale == 1 && yScale == 1 {
 		return i
 	}
+
 	return &scale{
 		Image:  i,
 		ScaleX: xScale,
@@ -46,11 +50,13 @@ func Scale(i image.Image, xScale, yScale float64) image.Image {
 
 func ScaleDimensions(i image.Image, x, y int) image.Image {
 	b := i.Bounds()
+
 	return Scale(i, float64(x)/float64(b.Dx()), float64(y)/float64(b.Dy()))
 }
 
 func (s *scale) Bounds() image.Rectangle {
 	b := s.Image.Bounds()
+
 	return image.Rect(
 		b.Min.X,
 		b.Min.Y,
@@ -61,6 +67,7 @@ func (s *scale) Bounds() image.Rectangle {
 
 func (s *scale) At(x, y int) color.Color {
 	b := s.Image.Bounds()
+
 	return s.Image.At(
 		b.Min.X+int(float64(x-b.Min.X)/s.ScaleX),
 		b.Min.Y+int(float64(y-b.Min.Y)/s.ScaleY),
@@ -87,6 +94,7 @@ func SmoothScale(i image.Image, xScale, yScale float64, scaler Scaler) image.Ima
 
 func SmoothScaleDimensions(i image.Image, x, y int, scaler Scaler) image.Image {
 	b := i.Bounds()
+
 	return SmoothScale(i, float64(x)/float64(b.Dx()), float64(y)/float64(b.Dy()), scaler)
 }
 

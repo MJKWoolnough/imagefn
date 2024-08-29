@@ -30,17 +30,20 @@ func FlipX(i image.Image) image.Image {
 	case *rotate180Set:
 		return FlipY(i.Image)
 	}
+
 	b := i.Bounds()
 	f := flipX{
 		Image: i,
 		dx:    b.Max.X + b.Min.X,
 	}
+
 	if s, ok := i.(setter); ok {
 		return &flipXSet{
 			flipX:  f,
 			setter: s,
 		}
 	}
+
 	return &f
 }
 
@@ -51,6 +54,7 @@ func (f *flipX) At(x, y int) color.Color {
 func (f *flipX) SubImage(r image.Rectangle) image.Image {
 	r.Min.X = f.dx - r.Min.X
 	r.Max.X = f.dx - r.Max.X
+
 	return FlipX(SubImage(f.Image, r.Canon()))
 }
 
@@ -83,17 +87,20 @@ func FlipY(i image.Image) image.Image {
 	case *rotate180Set:
 		return FlipX(i.Image)
 	}
+
 	b := i.Bounds()
 	f := flipY{
 		Image: i,
 		dy:    b.Max.Y + b.Min.Y,
 	}
+
 	if s, ok := i.(setter); ok {
 		return &flipYSet{
 			flipY:  f,
 			setter: s,
 		}
 	}
+
 	return &f
 }
 
@@ -104,6 +111,7 @@ func (f *flipY) At(x, y int) color.Color {
 func (f *flipY) SubImage(r image.Rectangle) image.Image {
 	r.Min.Y = f.dy - r.Min.Y
 	r.Max.Y = f.dy - r.Max.Y
+
 	return FlipY(SubImage(f.Image, r.Canon()))
 }
 

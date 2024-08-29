@@ -32,18 +32,21 @@ func Rotate90(i image.Image) image.Image {
 	case *rotate270Set:
 		return i.Image
 	}
+
 	b := i.Bounds()
 	r := rotate90{
 		Image: i,
 		ax:    b.Max.Y - b.Min.X, // x = My - mx - x
 		dy:    b.Min.X - b.Min.Y, // y = mx - my + y
 	}
+
 	if s, ok := i.(setter); ok {
 		return &rotate90Set{
 			rotate90: r,
 			setter:   s,
 		}
 	}
+
 	return &r
 }
 
@@ -55,6 +58,7 @@ func (r rotate90) Bounds() image.Rectangle {
 	b := r.Image.Bounds()
 	b.Min.X, b.Min.Y = b.Min.Y, b.Min.X
 	b.Max.X, b.Max.Y = b.Max.Y, b.Max.X
+
 	return b
 }
 
@@ -97,18 +101,21 @@ func Rotate180(i image.Image) image.Image {
 	case *rotate180Set:
 		return i.Image
 	}
+
 	b := i.Bounds()
 	r := rotate180{
 		Image: i,
 		dx:    b.Max.X + b.Min.X,
 		dy:    b.Max.Y + b.Min.Y,
 	}
+
 	if s, ok := i.(setter); ok {
 		return &rotate180Set{
 			rotate180: r,
 			setter:    s,
 		}
 	}
+
 	return &r
 }
 
@@ -156,18 +163,21 @@ func Rotate270(i image.Image) image.Image {
 	case *rotate270Set:
 		return Rotate180(i.Image)
 	}
+
 	b := i.Bounds()
 	r := rotate270{
 		Image: i,
 		dx:    b.Min.X - b.Min.Y, // y = mx - my + x
 		ay:    b.Max.X - b.Min.X, // x = Mx - mx - y
 	}
+
 	if s, ok := i.(setter); ok {
 		return &rotate270Set{
 			rotate270: r,
 			setter:    s,
 		}
 	}
+
 	return &r
 }
 
@@ -179,6 +189,7 @@ func (r rotate270) Bounds() image.Rectangle {
 	b := r.Image.Bounds()
 	b.Min.X, b.Min.Y = b.Min.Y, b.Min.X
 	b.Max.X, b.Max.Y = b.Max.Y, b.Max.X
+
 	return b
 }
 
