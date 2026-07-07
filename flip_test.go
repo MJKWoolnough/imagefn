@@ -14,8 +14,8 @@ func testImage(a, b image.Image) bool {
 	if dx != bb.Dx() || dy != bb.Dy() {
 		return false
 	}
-	for j := 0; j < dy; j++ {
-		for i := 0; i < dx; i++ {
+	for j := range dy {
+		for i := range dx {
 			ar, ag, ab, aa := a.At(ab.Min.X+i, ab.Min.Y+j).RGBA()
 			br, bg, bb, ba := b.At(bb.Min.X+i, bb.Min.Y+j).RGBA()
 			if ar != br || ag != bg || ab != bb || aa != ba {
@@ -29,8 +29,8 @@ func testImage(a, b image.Image) bool {
 func newGray(w, h int, pix ...uint8) *image.Gray {
 	g := image.NewGray(image.Rect(0, 0, w, h))
 Loop:
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
+	for y := range h {
+		for x := range w {
 			g.SetGray(x, y, color.Gray{pix[0]})
 			pix = pix[1:]
 			if len(pix) == 0 {
